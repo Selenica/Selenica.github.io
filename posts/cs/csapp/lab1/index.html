@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#554236"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#554236">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic%7CMarcellus+SC:300,300italic,400,400italic,700,700italic%7CJetBrains+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lunatic.blog","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概述C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：  精准的 C 语言内存管理； 对 C 指针和字符串的操作； 对常用数据结构实现的优化； 编写鲁棒性强的数据结构代码。  实验手册和实验材料可以在这里查阅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS:APP | C Programming Lab">
+<meta property="og:url" content="http://lunatic.blog/posts/cs/csapp/lab1/index.html">
+<meta property="og:site_name" content="Lunatic Selenium">
+<meta property="og:description" content="概述C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：  精准的 C 语言内存管理； 对 C 指针和字符串的操作； 对常用数据结构实现的优化； 编写鲁棒性强的数据结构代码。  实验手册和实验材料可以在这里查阅。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-26T03:50:38.447Z">
+<meta property="article:modified_time" content="2022-12-26T08:13:19.083Z">
+<meta property="article:author" content="Selenium">
+<meta property="article:tag" content="CS:APP">
+<meta property="article:tag" content="计算机结构">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://lunatic.blog/posts/cs/csapp/lab1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://lunatic.blog/posts/cs/csapp/lab1/","path":"posts/cs/csapp/lab1/","title":"CS:APP | C Programming Lab"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CS:APP | C Programming Lab | Lunatic Selenium</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Lunatic Selenium</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description"> </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">修改数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%98%9F%E5%88%97%E3%80%81%E5%88%A0%E9%99%A4%E9%98%9F%E5%88%97%E3%80%81%E8%AE%A1%E7%AE%97%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A6"><span class="nav-number">4.2.</span> <span class="nav-text">创建队列、删除队列、计算队列长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%85%83%E7%B4%A0%EF%BC%88LIFO-x2F-FIFO%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">插入元素（LIFO&#x2F;FIFO）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E9%98%9F%E5%A4%B4%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">4.4.</span> <span class="nav-text">删除队头的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E9%98%9F%E5%88%97"><span class="nav-number">4.5.</span> <span class="nav-text">反转队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C%E8%AF%84%E4%BB%B7"><span class="nav-number">5.</span> <span class="nav-text">结果评价</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#memcpy-%E5%92%8C-strcpy-%E6%BA%90%E7%A0%81%E6%AF%94%E8%BE%83"><span class="nav-number">6.1.</span> <span class="nav-text">memcpy 和 strcpy 源码比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E5%B1%82%E9%9D%A2%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">6.2.</span> <span class="nav-text">汇编层面的测试</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Selenium</p>
+  <div class="site-description" itemprop="description">随便写点什么东西吧。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://lunatic.blog/posts/cs/csapp/lab1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Selenium">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lunatic Selenium">
+      <meta itemprop="description" content="随便写点什么东西吧。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CS:APP | C Programming Lab | Lunatic Selenium">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CS:APP | C Programming Lab
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：</p>
+<ul>
+<li>精准的 C 语言内存管理；</li>
+<li>对 C 指针和字符串的操作；</li>
+<li>对常用数据结构实现的优化；</li>
+<li>编写鲁棒性强的数据结构代码。</li>
+</ul>
+<p>实验手册和实验材料可以在<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~213/labs.html">这里</a>查阅。</p>
+<span id="more"></span>
+
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>本实验的数据结构在 queue.h 中定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list_ele</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> *value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_ele</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; <span class="type">list_ele_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">list_ele_t</span> *head;</span><br><span class="line">&#125; <span class="type">queue_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>由 <code>value</code> 字段可知，这个队列的结点的值是一个指向字符数组的指针（也就是 C 语言对于字符串的表示），而 <code>next</code> 字段则是指向下一个结点的指针。这个队列的最上层表示是 <code>queue_t</code>，它只包含了一个类型为 <code>list_ele_t</code> 的指针，指向队列的头结点。队列的最后一个结点的 <code>next</code> 字段应当是 <code>NULL</code>。为了后续实现的进一步优化，读者可以自行在 <code>queue_t</code> 结构里添加新的字段，但不能改变 <code>list_ele_t</code> 的结构。</p>
+<div class="note info"><p>请注意区分 <code>queue_t == NULL</code> 和 <code>q-&gt;head == NULL</code>。前者表明该队列是一个无效队列，后者表明该队列是一个空队列。在后续的代码中读者需要辨别这两种不同的情况。</p>
+</div>
+
+<h2 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h2><p>读者的任务是修改 queue.h 和 queue.c，使得队列能正常工作。这里需要实现下面几个函数：</p>
+<ul>
+<li><code>queue_new</code>：创建一个新的空队列；</li>
+<li><code>queue_free</code>：删除队列，释放全部内存；</li>
+<li><code>queue_insert_head</code>：在队头插入一个元素（用于 LIFO）；</li>
+<li><code>queue_insert_tail</code>：在队尾插入一个元素（用于 FIFO）；</li>
+<li><code>queue_remove_head</code>：删除队头的元素；</li>
+<li><code>queue_size</code>：计算队列长度；</li>
+<li><code>queue_reverse</code>：反转队列（对结点指针操作，不可以重新分配内存）。</li>
+</ul>
+<div class="note warning"><p>队尾插入一个元素的时间复杂度要求 $O(1)$；<br>计算队列长度的时间复杂度要求 $O(1)$；<br>反转队列的空间复杂度要求 $O(1)$，时间复杂度要求优于 $O(n^2)$。</p>
+</div>
+
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="修改数据结构"><a href="#修改数据结构" class="headerlink" title="修改数据结构"></a>修改数据结构</h3><p>为了满足实验的复杂度要求，需要在 <code>queue_t</code> 加入新的字段 <code>list_ele_t *tail</code> 和 <code>size_t size</code>，分别标记了队列的尾结点和长度。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">list_ele_t</span> *head;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * <span class="doctag">TODO:</span> You will need to add more fields to this structure</span></span><br><span class="line"><span class="comment">     *       to efficiently implement q_size and q_insert_tail</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">list_ele_t</span> *tail;</span><br><span class="line">    <span class="type">size_t</span> size;</span><br><span class="line">&#125; <span class="type">queue_t</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建队列、删除队列、计算队列长度"><a href="#创建队列、删除队列、计算队列长度" class="headerlink" title="创建队列、删除队列、计算队列长度"></a>创建队列、删除队列、计算队列长度</h3><p>创建队列的操作如下所示。注意如果内存分配失败，<code>malloc</code> 将返回 <code>NULL</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">queue_t</span> *<span class="title function_">queue_new</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">queue_t</span> *q = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">queue_t</span>));</span><br><span class="line">    <span class="comment">/* What if malloc returned NULL? */</span></span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) &#123; <span class="comment">// Memory allocation failed</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;head = <span class="literal">NULL</span>; <span class="comment">// Initialize q</span></span><br><span class="line">    q-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    q-&gt;size = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除队列的操作如下所示。这里顺序遍历队列 <code>q</code>，依次删除元素的字符串和元素本身，最后删除 <code>q</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">queue_free</span><span class="params">(<span class="type">queue_t</span> *q)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* How about freeing the list elements and the strings? */</span></span><br><span class="line">    <span class="type">list_ele_t</span> *ele = q-&gt;head;</span><br><span class="line">    <span class="keyword">while</span> (ele != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="type">list_ele_t</span> *next = ele-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(ele-&gt;value); <span class="comment">// Free string</span></span><br><span class="line">        <span class="built_in">free</span>(ele);        <span class="comment">// Free list element</span></span><br><span class="line">        ele = next;       <span class="comment">// Proceeds</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Free queue structure */</span></span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取队列长度的操作如下所示，只需注意队列为 <code>NULL</code> 的情况即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> <span class="title function_">queue_size</span><span class="params">(<span class="type">queue_t</span> *q)</span> &#123;</span><br><span class="line">    <span class="comment">/* You need to write the code for this function */</span></span><br><span class="line">    <span class="comment">/* Remember: It should operate in O(1) time */</span></span><br><span class="line">    <span class="keyword">return</span> q == <span class="literal">NULL</span> ? <span class="number">0</span> : q-&gt;size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="插入元素（LIFO-x2F-FIFO）"><a href="#插入元素（LIFO-x2F-FIFO）" class="headerlink" title="插入元素（LIFO&#x2F;FIFO）"></a>插入元素（LIFO&#x2F;FIFO）</h3><p>在队列头插入元素操作流程是：</p>
+<ol>
+<li>新建一个元素并分配内存空间；</li>
+<li>为字符串分配内存空间，把 <code>const char *</code> 类型的参数复制到 <code>char *</code> 类型的 <code>value</code> 字段；</li>
+<li>把新元素插入队列头，元素计数 + 1。</li>
+</ol>
+<p>这里每一次分配内存空间都需要判断 <code>malloc</code> 返回的结果。为字符串分配空间时，若内存空间不足，则应当先释放队列元素的空间再返回 <code>false</code>。插入队列时，如果队列不为空，则直接把元素添加到队列头并更新 <code>q-&gt;head</code> 字段；如果队列为空，则让 <code>q-&gt;head</code> 和 <code>q-&gt;tail</code> 都指向新元素。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="title function_">queue_insert_head</span><span class="params">(<span class="type">queue_t</span> *q, <span class="type">const</span> <span class="type">char</span> *s)</span> &#123;</span><br><span class="line">    <span class="comment">/* What should you do if the q is NULL? */</span></span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">list_ele_t</span> *newh = (<span class="type">list_ele_t</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">list_ele_t</span>));</span><br><span class="line">    <span class="comment">/* Don&#x27;t forget to allocate space for the string and copy it */</span></span><br><span class="line">    <span class="comment">/* What if either call to malloc returns NULL? */</span></span><br><span class="line">    <span class="keyword">if</span> (newh == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    newh-&gt;value = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="built_in">strlen</span>(s) + <span class="number">1</span>);</span><br><span class="line">    newh-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (newh-&gt;value == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">free</span>(newh);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>(newh-&gt;value, s);</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;head == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        q-&gt;head = newh;</span><br><span class="line">        q-&gt;tail = newh;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        newh-&gt;next = q-&gt;head;</span><br><span class="line">        q-&gt;head = newh;</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;size++;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在队列尾插入元素操作流程与上一操作类似。由于增添了 <code>q-&gt;tail</code> 字段，该算法的时间复杂度为 $O(1)$。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="title function_">queue_insert_tail</span><span class="params">(<span class="type">queue_t</span> *q, <span class="type">const</span> <span class="type">char</span> *s)</span> &#123;</span><br><span class="line">    <span class="comment">/* You need to write the complete code for this function */</span></span><br><span class="line">    <span class="comment">/* Remember: It should operate in O(1) time */</span></span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">list_ele_t</span> *newt = (<span class="type">list_ele_t</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">list_ele_t</span>));</span><br><span class="line">    <span class="keyword">if</span> (newt == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    newt-&gt;value = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="built_in">strlen</span>(s) + <span class="number">1</span>);</span><br><span class="line">    newt-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (newt-&gt;value == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">free</span>(newt);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>(newt-&gt;value, s);</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;head == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        q-&gt;head = newt;</span><br><span class="line">        q-&gt;tail = newt;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        q-&gt;tail-&gt;next = newt;</span><br><span class="line">        q-&gt;tail = newt;</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;size++;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除队头的元素"><a href="#删除队头的元素" class="headerlink" title="删除队头的元素"></a>删除队头的元素</h3><p>删除队头元素（弹出元素）的操作流程是：</p>
+<ol>
+<li>把队头元素的值复制到长度为 <code>bufsize</code> 的缓冲区 <code>buf</code>，<code>buf</code> 的最后一个字节应该是 <code>\0</code>；</li>
+<li>删除队头元素，元素计数 - 1。</li>
+</ol>
+<p>因为缓冲区的长度是有限的，所以这里不能直接用 <code>strcpy</code>，而应采用 <code>strncpy</code> 来复制给定长度的内存区域。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="title function_">queue_remove_head</span><span class="params">(<span class="type">queue_t</span> *q, <span class="type">char</span> *buf, <span class="type">size_t</span> bufsize)</span> &#123;</span><br><span class="line">    <span class="comment">/* You need to fix up this code. */</span></span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span> || q-&gt;head == <span class="literal">NULL</span>) &#123; <span class="comment">// q is NULL or empty.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">list_ele_t</span> *ele = q-&gt;head;</span><br><span class="line">    q-&gt;head = q-&gt;head-&gt;next;</span><br><span class="line">    <span class="keyword">if</span> (buf != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">strncpy</span>(buf, ele-&gt;value, bufsize - <span class="number">1</span>);</span><br><span class="line">        buf[bufsize - <span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ele-&gt;value != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">free</span>(ele-&gt;value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(ele);</span><br><span class="line">    q-&gt;size--;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="反转队列"><a href="#反转队列" class="headerlink" title="反转队列"></a>反转队列</h3><p>用头插法反转队列。需要把队尾元素挨个插入到队头，当新的队头和旧的队尾相等时循环结束。反转队列的空间复杂度为 $O(1)$，时间复杂度为 $O(n)$。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">queue_reverse</span><span class="params">(<span class="type">queue_t</span> *q)</span> &#123;</span><br><span class="line">    <span class="comment">/* You need to write the code for this function */</span></span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span> || q-&gt;head == <span class="literal">NULL</span> || q-&gt;head == q-&gt;tail) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">list_ele_t</span> *old_head = q-&gt;head;</span><br><span class="line">    <span class="type">list_ele_t</span> *old_tail = q-&gt;tail;</span><br><span class="line">    <span class="keyword">while</span> (q-&gt;head != old_tail) &#123;</span><br><span class="line">        <span class="type">list_ele_t</span> *head = q-&gt;head;</span><br><span class="line">        q-&gt;head = q-&gt;head-&gt;next;</span><br><span class="line">        head-&gt;next = q-&gt;tail-&gt;next;</span><br><span class="line">        q-&gt;tail-&gt;next = head;</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;tail = old_head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="note warning"><p>这里反转队列（链表）使用了头插法。事实上，如果用递归的方法反转队列则会导致递归栈快速膨胀，空间复杂度为 $O(n)$，满足不了实验要求的原地操作。</p>
+</div>
+
+<h2 id="结果评价"><a href="#结果评价" class="headerlink" title="结果评价"></a>结果评价</h2><p>在终端输入 <code>make test</code>，第一次运行编译报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">report.c:134:5: error: &#x27;sprintf&#x27; is deprecated:</span><br><span class="line">  ... it is highly recommended that you use snprintf(3) instead.</span><br><span class="line">    sprintf(fail_buf, format, msg);</span><br><span class="line">    ^</span><br></pre></td></tr></table></figure>
+
+<p>只需把 report.c 第 134 行中弃用的 <code>sprintf</code> 改成 <code>snprintf</code> 即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Need to be able to print without using malloc */</span></span><br><span class="line">NORETURN <span class="title function_">fail_fun</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *format, <span class="type">const</span> <span class="type">char</span> *msg)</span> &#123;</span><br><span class="line">    <span class="comment">// sprintf(fail_buf, format, msg);</span></span><br><span class="line">    <span class="built_in">snprintf</span>(fail_buf, <span class="keyword">sizeof</span>(fail_buf), format, msg);</span><br><span class="line">    <span class="comment">/* Tack on return */</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>再次运行 <code>make test</code>，结果如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ make test</span><br><span class="line">chmod +x driver.py</span><br><span class="line">./driver.py</span><br><span class="line">---     Trace           Points</span><br><span class="line"></span><br><span class="line">+++ TESTING trace trace-01-ops:</span><br><span class="line">./qtest -v 1 -f ./traces/trace-01-ops.cmd</span><br><span class="line"># Test of insert_head and remove_head</span><br><span class="line">---     trace-01-ops    6/6</span><br><span class="line"></span><br><span class="line">+++ TESTING trace trace-02-ops:</span><br><span class="line">./qtest -v 1 -f ./traces/trace-02-ops.cmd</span><br><span class="line"># Test of insert_head, insert_tail, and remove_head</span><br><span class="line">---     trace-02-ops    6/6</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">+++ TESTING trace trace-15-perf:</span><br><span class="line">./qtest -v 1 -f ./traces/trace-15-perf.cmd</span><br><span class="line"># Test performance of insert_tail, size, and reverse</span><br><span class="line">---     trace-15-perf   7/7</span><br><span class="line">---     TOTAL           100/100</span><br></pre></td></tr></table></figure>
+
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><div class="note info"><p>在进行复制内存的操作时，我一开始使用了 <code>memcpy</code> 函数，事实证明两者从结果上看并没有什么差别。尽管如此，我还是希望对 <code>memcpy</code> 和 <code>strcpy</code> 的效率进行比较。</p>
+</div>
+
+<h3 id="memcpy-和-strcpy-源码比较"><a href="#memcpy-和-strcpy-源码比较" class="headerlink" title="memcpy 和 strcpy 源码比较"></a><code>memcpy</code> 和 <code>strcpy</code> 源码比较</h3><p>首先查阅 <a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/lib/string.c">Linux 的 <code>strcpy</code> 实现</a>，这个函数仅仅是按字节复制内存，到 <code>\0</code> 终止。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *<span class="title function_">strcpy</span><span class="params">(<span class="type">char</span> *dest, <span class="type">const</span> <span class="type">char</span> *src)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> *tmp = dest;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> ((*dest++ = *src++) != <span class="string">&#x27;\0&#x27;</span>)</span><br><span class="line">		<span class="comment">/* nothing */</span>;</span><br><span class="line">	<span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再查阅 <a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/arch/alpha/lib/memcpy.c">Linux 的 <code>memcpy</code> 实现</a>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> * <span class="title function_">memcpy</span><span class="params">(<span class="type">void</span> * dest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> n)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (!(((<span class="type">unsigned</span> <span class="type">long</span>) dest ^ (<span class="type">unsigned</span> <span class="type">long</span>) src) &amp; <span class="number">7</span>)) &#123;</span><br><span class="line">		__memcpy_aligned_up ((<span class="type">unsigned</span> <span class="type">long</span>) dest, (<span class="type">unsigned</span> <span class="type">long</span>) src,</span><br><span class="line">				     n);</span><br><span class="line">		<span class="keyword">return</span> dest;</span><br><span class="line">	&#125;</span><br><span class="line">	__memcpy_unaligned_up ((<span class="type">unsigned</span> <span class="type">long</span>) dest, (<span class="type">unsigned</span> <span class="type">long</span>) src, n);</span><br><span class="line">	<span class="keyword">return</span> dest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>!(((unsigned long) dest ^ (unsigned long) src) &amp; 7)</code> 的含义是判断 <code>dest - src</code> 是否是 8 的整数倍。继续考察 <code>__memcpy_aligned_up</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> __memcpy_aligned_up (<span class="type">unsigned</span> <span class="type">long</span> d, <span class="type">unsigned</span> <span class="type">long</span> s,</span><br><span class="line">					<span class="type">long</span> n)</span><br><span class="line">&#123;</span><br><span class="line">	ALIGN_DEST_TO8_UP(d,s,n);</span><br><span class="line">	n -= <span class="number">8</span>;</span><br><span class="line">	<span class="keyword">while</span> (n &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="type">unsigned</span> <span class="type">long</span> tmp;</span><br><span class="line">		__asm__(<span class="string">&quot;ldq %0,%1&quot;</span>:<span class="string">&quot;=r&quot;</span> (tmp):<span class="string">&quot;m&quot;</span> (*(<span class="type">unsigned</span> <span class="type">long</span> *) s));</span><br><span class="line">		n -= <span class="number">8</span>;</span><br><span class="line">		s += <span class="number">8</span>;</span><br><span class="line">		*(<span class="type">unsigned</span> <span class="type">long</span> *) d = tmp;</span><br><span class="line">		d += <span class="number">8</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	n += <span class="number">8</span>;</span><br><span class="line">	DO_REST_ALIGNED_UP(d,s,n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的含义就是以 8 字节为一个块批量复制内存。汇编代码 <code>__asm__(&quot;ldq %0,%1&quot;:&quot;=r&quot; (tmp):&quot;m&quot; (*(unsigned long *) s));</code> 的操作是一次性复制四个字（<strong>L</strong>oa<strong>d</strong> <strong>Q</strong>uadword），即 8 字节。</p>
+<p>综合来看，<code>strcpy</code> 是按照字节复制的，到 <code>\0</code> 即停止；而 <code>memcpy</code> 是按照四个字批量复制的，在待复制内存长度较大的情况下对比 <code>strcpy</code> 会有明显的效率提升。当 <code>n</code> 比较大时，计算字符串长度的一次性开销足以忽略。</p>
+<h3 id="汇编层面的测试"><a href="#汇编层面的测试" class="headerlink" title="汇编层面的测试"></a>汇编层面的测试</h3><p>编写测试代码 test.c 如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">memcpy_test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> *dest;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *src = <span class="string">&quot;hello memcpy&quot;</span>;</span><br><span class="line">    <span class="built_in">memcpy</span>(dest, src, <span class="built_in">strlen</span>(src));</span><br><span class="line">    dest[<span class="built_in">strlen</span>(src)] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">strcpy_test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> *dest;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *src = <span class="string">&quot;hello strcpy&quot;</span>;</span><br><span class="line">    <span class="built_in">strcpy</span>(dest, src);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>gcc -S -O2 test.c</code> 得到编译器 <code>-O2</code> 优化过的汇编代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">_memcpy_test:                           ## @memcpy_test</span><br><span class="line">	.cfi_startproc</span><br><span class="line">## %bb.0:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	.cfi_def_cfa_offset 16</span><br><span class="line">	.cfi_offset %rbp, -16</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	.cfi_def_cfa_register %rbp</span><br><span class="line">	leaq	L_.str(%rip), %rsi</span><br><span class="line">	movl	$12, %edx</span><br><span class="line">	xorl	%ecx, %ecx</span><br><span class="line">	callq	___memcpy_chk</span><br><span class="line">	ud2</span><br><span class="line">	.cfi_endproc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">_strcpy_test:                           ## @strcpy_test</span><br><span class="line">	.cfi_startproc</span><br><span class="line">## %bb.0:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	.cfi_def_cfa_offset 16</span><br><span class="line">	.cfi_offset %rbp, -16</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	.cfi_def_cfa_register %rbp</span><br><span class="line">	leaq	L_.str(%rip), %rsi</span><br><span class="line">	movl	$13, %edx</span><br><span class="line">	xorl	%ecx, %ecx</span><br><span class="line">	popq	%rbp</span><br><span class="line">	jmp	___memcpy_chk                   ## TAILCALL</span><br><span class="line">	.cfi_endproc</span><br></pre></td></tr></table></figure>
+
+<p>这里无论是采用 <code>strcpy</code> 还是 <code>memcpy</code>，计算机始终是调用 <code>___memcpy_chk</code> 这个内置函数。这从另一方面印证了上文所叙述的观点，即 <code>memcpy</code> 的效率是总体优于 <code>strcpy</code> 的。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CS-APP/" rel="tag"># CS:APP</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%93%E6%9E%84/" rel="tag"># 计算机结构</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/overview/" rel="prev" title="计划">
+                  <i class="fa fa-chevron-left"></i> 计划
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Selenium</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
