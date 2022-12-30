@@ -17,22 +17,22 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"lunatic.blog","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lunatic.blog","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="概述C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：  精准的 C 语言内存管理； 对 C 指针和字符串的操作； 对常用数据结构实现的优化； 编写鲁棒性强的数据结构代码。  实验手册和实验材料可以在这里查阅。">
-<meta property="og:type" content="article">
+    <meta property="og:type" content="article">
 <meta property="og:title" content="CS:APP | C Programming Lab">
 <meta property="og:url" content="http://lunatic.blog/posts/cs/csapp/lab1/index.html">
 <meta property="og:site_name" content="Lunatic Selenium">
-<meta property="og:description" content="概述C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：  精准的 C 语言内存管理； 对 C 指针和字符串的操作； 对常用数据结构实现的优化； 编写鲁棒性强的数据结构代码。  实验手册和实验材料可以在这里查阅。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lunatic.blog/images/93763927_p0.png">
 <meta property="article:published_time" content="2022-12-26T03:50:38.447Z">
-<meta property="article:modified_time" content="2022-12-26T12:00:22.024Z">
+<meta property="article:modified_time" content="2022-12-29T14:39:13.677Z">
 <meta property="article:author" content="Selenium">
 <meta property="article:tag" content="CS:APP">
 <meta property="article:tag" content="计算机结构">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lunatic.blog/images/93763927_p0.png">
 
 
 <link rel="canonical" href="http://lunatic.blog/posts/cs/csapp/lab1/">
@@ -92,7 +92,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-folder fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
@@ -123,6 +123,8 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Selenium"
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">Selenium</p>
   <div class="site-description" itemprop="description">随便写点什么东西吧。</div>
 </div>
@@ -130,9 +132,14 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
@@ -144,6 +151,10 @@
 
         </div>
       </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
     </div>
 
     
@@ -166,7 +177,7 @@
     <link itemprop="mainEntityOfPage" href="http://lunatic.blog/posts/cs/csapp/lab1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="Selenium">
     </span>
 
@@ -186,6 +197,23 @@
 
         <div class="post-meta-container">
           <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-26 11:50:38" itemprop="dateCreated datePublished" datetime="2022-12-26T11:50:38+08:00">2022-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
 
   
 </div>
@@ -197,7 +225,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：</p>
+        <p><img src="/images/93763927_p0.png"></p>
+<span id="more"></span>
+
+<p align="center">图文无关</p>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>C Programming Lab 的要求是实现一个支持 FIFO 和 LIFO 的队列。本实验的实验材料已经提供了队列数据结构的框架，需要读者来自行完成对数据结构的各种操作。完成本实验需要掌握的基本编程技能有：</p>
 <ul>
 <li>精准的 C 语言内存管理；</li>
 <li>对 C 指针和字符串的操作；</li>
@@ -205,8 +238,6 @@
 <li>编写鲁棒性强的数据结构代码。</li>
 </ul>
 <p>实验手册和实验材料可以在<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~213/labs.html">这里</a>查阅。</p>
-<span id="more"></span>
-
 <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>本实验的数据结构在 queue.h 中定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list_ele</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> *value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_ele</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; <span class="type">list_ele_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">list_ele_t</span> *head;</span><br><span class="line">&#125; <span class="type">queue_t</span>;</span><br></pre></td></tr></table></figure>
 
@@ -306,9 +337,9 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/CS-APP/" rel="tag"># CS:APP</a>
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%93%E6%9E%84/" rel="tag"># 计算机结构</a>
-              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+              <a href="/tags/CS-APP/" rel="tag"><i class="fa fa-tag"></i> CS:APP</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%93%E6%9E%84/" rel="tag"><i class="fa fa-tag"></i> 计算机结构</a>
+              <a href="/tags/C-C/" rel="tag"><i class="fa fa-tag"></i> C/C++</a>
           </div>
 
         
@@ -345,19 +376,15 @@
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="fa fa-moon"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Selenium</span>
+  <span class="author" itemprop="copyrightHolder">Kaian Passageway #4</span>
 </div>
 
     </div>
   </footer>
 
   
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
 
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
@@ -384,6 +411,9 @@
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js" integrity="sha256-yvJQOINiH9fWemHn0vCA5lsHWJaHs6/ZmO+1Ft04SvM=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"http://lunatic.blog/posts/cs/csapp/lab1/"}</script>
+  <script src="/js/third-party/quicklink.js"></script>
 
 </body>
 </html>
